@@ -21,66 +21,152 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- * Hint: use extdeveval to insert/update function index above.
- */
 
-require_once(PATH_t3lib.'class.t3lib_svbase.php');
-
+require_once(t3lib_extMgm::extPath('adodb', 'adodb/adodb.inc.php'));
+require_once(t3lib_extMgm::extPath('adodb', 'adodb/adodb-exceptions.inc.php'));
 
 /**
  * Service "SQL connector" for the "svconnector_sql" extension.
  *
- * @author	Francois Suter (Cobweb) <typo3@cobweb.ch>
- * @package	TYPO3
+ * @author		Francois Suter (Cobweb) <typo3@cobweb.ch>
+ * @package		TYPO3
  * @subpackage	tx_svconnectorsql
+ *
+ * $Id$
  */
-class tx_svconnectorsql_sv1 extends t3lib_svbase {
-				var $prefixId = 'tx_svconnectorsql_sv1';		// Same as class name
-				var $scriptRelPath = 'sv1/class.tx_svconnectorsql_sv1.php';	// Path to this script relative to the extension dir.
-				var $extKey = 'svconnector_sql';	// The extension key.
-	
-				/**
-	 * [Put your description here]
+class tx_svconnectorsql_sv1 extends tx_svconnector_base {
+	public $prefixId = 'tx_svconnectorsql_sv1';		// Same as class name
+	public $scriptRelPath = 'sv1/class.tx_svconnectorsql_sv1.php';	// Path to this script relative to the extension dir.
+	public $extKey = 'svconnector_sql';	// The extension key.
+
+	/**
+	 * Verifies that the connection is functional
+	 * In this case it always is, as the connection can really be tested only for specific configurations
 	 *
-	 * @return	[type]		...
+	 * @return	boolean		TRUE if the service is available
 	 */
-				function init()	{
-					$available = parent::init();
-	
-					// Here you can initialize your class.
-	
-					// The class have to do a strict check if the service is available.
-					// The needed external programs are already checked in the parent class.
-	
-					// If there's no reason for initialization you can remove this function.
-	
-					return $available;
-				}
-	
-				/**
-	 * [Put your description here]
-	 * performs the service processing
+	public function init() {
+		parent::init();
+//		$this->lang->includeLLFile('EXT:'.$this->extKey.'/sv1/locallang.xml');
+		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+		return TRUE;
+	}
+
+	/**
+	 * This method calls the fetchArray() method and returns the result as is,
+	 * i.e. the SQL record set, but without any additional work performed on it
 	 *
-	 * @param	string		Content which should be processed.
-	 * @param	string		Content type
-	 * @param	array		Configuration array
-	 * @return	boolean
+	 * @param	array	$parameters: parameters for the call
+	 *
+	 * @return	mixed	server response
 	 */
-				function process($content='', $type='', $conf=array())	{
-	
-					// Depending on the service type there's not a process() function.
-					// You have to implement the API of that service type.
-	
-					return FALSE;
+	public function fetchRaw($parameters) {
+			// Get the data as an array
+			// NOTE: this may throw an exception, but we let it bubble up
+		$result = $this->fetchArray($parameters);
+			// Implement post-processing hook
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processRaw'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processRaw'] as $className) {
+				$processor = &t3lib_div::getUserObj($className);
+				$result = $processor->processRaw($result, $this);
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * This method calls the query and returns the results from the response as an XML structure
+	 *
+	 * @param	array	$parameters: parameters for the call
+	 *
+	 * @return	string	XML structure
+	 */
+	public function fetchXML($parameters) {
+			// Get the data as an array
+			// NOTE: this may throw an exception, but we let it bubble up
+		$result = $this->fetchArray($parameters);
+			// Transform result to XML
+		$xml = t3lib_div::array2xml_cs($result);
+			// Implement post-processing hook
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processXML'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processXML'] as $className) {
+				$processor = &t3lib_div::getUserObj($className);
+				$xml = $processor->processXML($xml, $this);
+			}
+		}
+		return $xml;
+	}
+
+	/**
+	 * This method calls the query and returns the results from the response as a PHP array
+	 *
+	 * @param	array	$parameters: parameters for the call
+	 *
+	 * @return	array	PHP array
+	 */
+	public function fetchArray($parameters) {
+		try {
+			$data = $this->query($parameters);
+			if (TYPO3_DLOG || $this->extConf['debug']) {
+				t3lib_div::devLog('Structured data', $this->extKey, -1, $data);
+			}
+
+				// Implement post-processing hook
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processArray'])) {
+				foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processArray'] as $className) {
+					$processor = &t3lib_div::getUserObj($className);
+					$data = $processor->processArray($data, $this);
 				}
+			}
+		}
+		catch (Exception $e) {
+				// Log exception and throw it further
+			if (TYPO3_DLOG || $this->extConf['debug']) {
+				t3lib_div::devLog('An error occurred: ' . $e->getMessage(), 'svconnector_sql', 3);
+			}
+			throw $e;
+		}
+		return $data;
+	}
+
+	/**
+	 * This method connects to the designated database, executes the given query and returns the data an an array
+	 *
+	 * NOTE:	this method does not implement the "processParameters" hook,
+	 *			as it does not make sense in this case
+	 *
+	 * @param	array	$parameters: parameters for the call
+	 * @return	array	Result of the SQL query
+	 */
+	protected function query($parameters) {
+		$data = array();
+			// Connect to the database and execute the query
+			// NOTE: this may throw exceptions, but we let them bubble up
+			/** @var $adodbObject ADOConnection */
+		$adodbObject = ADONewConnection($parameters['driver']);
+		$adodbObject->Connect($parameters['server'], $parameters['user'], $parameters['password'], $parameters['database']);
+			// Execute connection initialization if defined
+		if (!empty($parameters['init'])) {
+			$res = $adodbObject->Execute($parameters['init']);
+		}
+		$res = $adodbObject->Execute($parameters['query']);
+		$data = $res->GetRows();
+
+			// Process the result if any hook is registered
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processResponse'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processResponse'] as $className) {
+				$processor = &t3lib_div::getUserObj($className);
+				$data = $processor->processResponse($data, $this);
+			}
+		}
+			// Return the result
+		return $data;
+	}
 }
 
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/svconnector_sql/sv1/class.tx_svconnectorsql_sv1.php'])	{
+if (defined('TYPO3_MODE') && isset($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/svconnector_sql/sv1/class.tx_svconnectorsql_sv1.php'])) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/svconnector_sql/sv1/class.tx_svconnectorsql_sv1.php']);
 }
 

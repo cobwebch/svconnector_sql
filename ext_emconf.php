@@ -11,7 +11,7 @@
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'SQL-based Database Connector',
+	'title' => 'Connector service - SQL',
 	'description' => 'Connector service for any SQL-based database via ADODB.',
 	'category' => 'services',
 	'author' => 'Francois Suter (Cobweb)',
@@ -26,7 +26,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'uploadfolder' => 0,
 	'createDirs' => '',
 	'modify_tables' => '',
-	'clearCacheOnLoad' => 1,
+	'clearCacheOnLoad' => 0,
 	'lockType' => '',
 	'author_company' => '',
 	'version' => '0.0.0',
