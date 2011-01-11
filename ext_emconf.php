@@ -33,6 +33,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'adodb' => '',
+			'svconnector' => '1.1.0-0.0.0',
 		),
 		'conflicts' => array(
 		),
