@@ -1,2 +1,5 @@
+Connector services are designed to provide a standard way of connecting to remote applications.
 
-Feel free to add some documentation or simply add a link to the online manual.
+This particular implementation is dedicated to connecting to third-party databases using ADODB.
+
+Please refer to the manual for full details.
