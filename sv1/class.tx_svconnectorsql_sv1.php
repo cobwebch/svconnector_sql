@@ -141,7 +141,7 @@ class tx_svconnectorsql_sv1 extends tx_svconnector_base {
 			// NOTE: this may throw exceptions, but we let them bubble up
 			/** @var $adodbObject ADOConnection */
 		$adodbObject = ADONewConnection($parameters['driver']);
-		$adodbObject->Connect($parameters['server'], $parameters['user'], $parameters['password'], $parameters['database']);
+		$adodbObject->NConnect($parameters['server'], $parameters['user'], $parameters['password'], $parameters['database']);
 			// Execute connection initialization if defined
 		if (!empty($parameters['init'])) {
 			$res = $adodbObject->Execute($parameters['init']);
