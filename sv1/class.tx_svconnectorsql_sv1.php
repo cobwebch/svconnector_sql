@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Francois Suter (Cobweb) <typo3@cobweb.ch>
+*  (c) 2010-2012 Francois Suter (Cobweb) <typo3@cobweb.ch>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -47,8 +47,7 @@ class tx_svconnectorsql_sv1 extends tx_svconnector_base {
 	 */
 	public function init() {
 		parent::init();
-//		$this->lang->includeLLFile('EXT:'.$this->extKey.'/sv1/locallang.xml');
-		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+		$this->extConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConfiguration'][$this->extKey]);
 		return TRUE;
 	}
 
@@ -107,7 +106,7 @@ class tx_svconnectorsql_sv1 extends tx_svconnector_base {
 	public function fetchArray($parameters) {
 		try {
 			$data = $this->query($parameters);
-			if (TYPO3_DLOG || $this->extConf['debug']) {
+			if (TYPO3_DLOG || $this->extConfiguration['debug']) {
 				t3lib_div::devLog('Structured data', $this->extKey, -1, $data);
 			}
 
@@ -121,7 +120,7 @@ class tx_svconnectorsql_sv1 extends tx_svconnector_base {
 		}
 		catch (Exception $e) {
 				// Log exception and throw it further
-			if (TYPO3_DLOG || $this->extConf['debug']) {
+			if (TYPO3_DLOG || $this->extConfiguration['debug']) {
 				t3lib_div::devLog('An error occurred: ' . $e->getMessage(), 'svconnector_sql', 3);
 			}
 			throw $e;
@@ -132,14 +131,13 @@ class tx_svconnectorsql_sv1 extends tx_svconnector_base {
 	/**
 	 * This method connects to the designated database, executes the given query and returns the data an an array
 	 *
-	 * NOTE:	this method does not implement the "processParameters" hook,
-	 *			as it does not make sense in this case
+	 * NOTE:    this method does not implement the "processParameters" hook,
+	 *            as it does not make sense in this case
 	 *
-	 * @param	array	$parameters: parameters for the call
-	 * @return	array	Result of the SQL query
+	 * @param array $parameters Parameters for the call
+	 * @return array|mixed Result of the SQL query
 	 */
 	protected function query($parameters) {
-		$data = array();
 			// Connect to the database and execute the query
 			// NOTE: this may throw exceptions, but we let them bubble up
 			/** @var $adodbObject ADOConnection */
@@ -149,6 +147,7 @@ class tx_svconnectorsql_sv1 extends tx_svconnector_base {
 		if (!empty($parameters['init'])) {
 			$res = $adodbObject->Execute($parameters['init']);
 		}
+			/** @var $res ADORecordSet */
 		$res = $adodbObject->Execute($parameters['query']);
 		$data = $res->GetRows();
 
