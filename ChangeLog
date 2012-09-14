@@ -1,3 +1,7 @@
+2012-09-14 Francois Suter (Cobweb)  <typo3@cobweb.ch>
+
+	* Added sample configuration, resolves #40919
+
 2012-06-15 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
 	* Changed connection process to use NConnect, resolves #37956 (thanks to Christoph Holtermann)
