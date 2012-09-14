@@ -5,3 +5,4 @@ password = password
 database = database
 query = SELECT * FROM foo ORDER BY bar
 init = SET NAMES utf8
+fetchMode = 2
