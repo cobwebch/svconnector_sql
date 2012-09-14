@@ -1,6 +1,7 @@
 2012-09-14 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
 	* Added sample configuration, resolves #40919
+	* Added support for ADODB fetch mode parameter, resolves #36877 (thanks to ian)
 
 2012-06-15 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 

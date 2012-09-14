@@ -142,6 +142,13 @@ class tx_svconnectorsql_sv1 extends tx_svconnector_base {
 			/** @var $adodbObject ADOConnection */
 		$adodbObject = ADONewConnection($parameters['driver']);
 		$adodbObject->NConnect($parameters['server'], $parameters['user'], $parameters['password'], $parameters['database']);
+
+			// Set ADODB fetch mode if defined
+		if (!empty($parameters['fetchMode'])) {
+			$fetchMode = intval($parameters['fetchMode']);
+			$adodbObject->SetFetchMode($fetchMode);
+		}
+
 			// Execute connection initialization if defined
 		if (!empty($parameters['init'])) {
 			$res = $adodbObject->Execute($parameters['init']);
