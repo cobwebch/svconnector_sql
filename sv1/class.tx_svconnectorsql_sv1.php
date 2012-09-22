@@ -130,11 +130,12 @@ class tx_svconnectorsql_sv1 extends tx_svconnector_base {
 	/**
 	 * This method connects to the designated database, executes the given query and returns the data an an array
 	 *
-	 * NOTE:    this method does not implement the "processParameters" hook,
-	 *            as it does not make sense in this case
+	 * NOTE: this method does not implement the "processParameters" hook,
+	 *       as it does not make sense in this case
 	 *
 	 * @param array $parameters Parameters for the call
-	 * @return array|mixed Result of the SQL query
+	 * @throws Exception
+	 * @return array Result of the SQL query
 	 */
 	protected function query($parameters) {
 			// Connect to the database and execute the query
@@ -152,10 +153,17 @@ class tx_svconnectorsql_sv1 extends tx_svconnector_base {
 			// Execute connection initialization if defined
 		if (!empty($parameters['init'])) {
 			$res = $adodbObject->Execute($parameters['init']);
+			if (!$res) {
+				throw new Exception($adodbObject->ErrorMsg(), $adodbObject->ErrorNo());
+			}
 		}
 			/** @var $res ADORecordSet */
 		$res = $adodbObject->Execute($parameters['query']);
-		$data = $res->GetRows();
+		if (!$res) {
+			throw new Exception($adodbObject->ErrorMsg(), $adodbObject->ErrorNo());
+		} else {
+			$data = $res->GetRows();
+		}
 
 			// Process the result if any hook is registered
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processResponse'])) {
