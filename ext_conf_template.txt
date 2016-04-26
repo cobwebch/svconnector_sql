@@ -1,2 +1,2 @@
-# cat=basic/enable/; type=boolean; label=LLL:EXT:svconnector_sql/locallang.xml:config_debug
+# cat=basic/enable/; type=boolean; label=LLL:EXT:svconnector_sql/Resources/Private/Language/locallang.xlf:config_debug
 debug = 0
