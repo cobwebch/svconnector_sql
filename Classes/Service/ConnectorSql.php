@@ -14,18 +14,12 @@ namespace Cobweb\SvconnectorSql\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Cobweb\Svconnector\Exception\SourceErrorException;
 use Cobweb\Svconnector\Service\ConnectorBase;
+use Cobweb\SvconnectorSql\Database\DatabaseConnectionFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-$adodbPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('adodb');
-require_once($adodbPath . 'adodb/adodb.inc.php');
-require_once($adodbPath . 'adodb/adodb-exceptions.inc.php');
 
 /**
  * Service "SQL connector" for the "svconnector_sql" extension.
- *
- * Uses ADODB to connect to a variety of DBMS
  *
  * @author Francois Suter (Cobweb) <typo3@cobweb.ch>
  * @package TYPO3
@@ -133,44 +127,17 @@ class ConnectorSql extends ConnectorBase
      *       as it does not make sense in this case
      *
      * @param array $parameters Parameters for the call
-     * @throws SourceErrorException
+     * @throws \Cobweb\SvconnectorSql\Exception\DatabaseConnectionException
+     * @throws \Cobweb\SvconnectorSql\Exception\QueryErrorException
      * @return array Result of the SQL query
      */
     protected function query($parameters)
     {
         // Connect to the database and execute the query
         // NOTE: this may throw exceptions, but we let them bubble up
-        /** @var $adodbObject \ADOConnection */
-        $adodbObject = ADONewConnection($parameters['driver']);
-        $adodbObject->NConnect($parameters['server'], $parameters['user'], $parameters['password'],
-                $parameters['database']);
-
-        // Set ADODB fetch mode if defined
-        if (!empty($parameters['fetchMode'])) {
-            $fetchMode = (int)$parameters['fetchMode'];
-            $adodbObject->SetFetchMode($fetchMode);
-        }
-
-        // Execute connection initialization if defined
-        if (!empty($parameters['init'])) {
-            $res = $adodbObject->Execute($parameters['init']);
-            if (!$res) {
-                throw new SourceErrorException(
-                        $adodbObject->ErrorMsg(),
-                        $adodbObject->ErrorNo()
-                );
-            }
-        }
-        /** @var $res \ADORecordSet */
-        $res = $adodbObject->Execute($parameters['query']);
-        if (!$res) {
-            throw new SourceErrorException(
-                    $adodbObject->ErrorMsg(),
-                    $adodbObject->ErrorNo()
-            );
-        } else {
-            $data = $res->GetRows();
-        }
+        $databaseConnection = DatabaseConnectionFactory::getDatabaseConnection();
+        $databaseConnection->connect($parameters);
+        $data = $databaseConnection->query($parameters['query']);
 
         // Process the result if any hook is registered
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processResponse'])) {

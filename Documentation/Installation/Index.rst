@@ -17,5 +17,13 @@ issuing SQL queries to any database inside your own code
 :ref:`Configuration <configuration>`).
 
 It requires extension “svconnector” which provides the base
-for all connector services and extension "adodb" to load the ADODB library.
-The "adodb" extension is a system extension provided with the TYPO3 CMS Core.
+for all connector services. With TYPO3 v7, it also requires
+system extension "adodb" to load the ADODB library. With
+TYPO3 v8, the Doctrine DBAL library is anyway loaded via the
+base Composer configuration.
+
+.. note::
+
+   The whole compatibility layer which makes it possible to use both
+   ADODB and Doctrine DBAL and thus ensures compatibility across
+   TYPO3 version 7 and 8 will be removed in a future release.

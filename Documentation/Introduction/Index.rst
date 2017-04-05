@@ -12,9 +12,11 @@ Introduction
 ------------
 
 This extension implements a specific connector service for reading
-data from any database. It relies on ADODB to connect to any
+data from any database. With TYPO3 v7, it relies on ADODB to connect to any
 database system supported by that library (with some limits,
 due to the many weird syntaxes used for some systems).
+With TYPO3 v8, it relies on Doctrine DBAL, which comes with a better
+unified way of defining connection parameters.
 SQL queries can then be used.
 
 .. _support:
@@ -24,9 +26,9 @@ Questions and support
 
 If you have any questions about this extension, please ask them in the
 TYPO3 English mailing list, so that others can benefit from the
-answers. Please use the bug tracker on forge.typo3.org to report
+answers. Please use the bug tracker on GitHub to report
 problem or suggest features
-(http://forge.typo3.org/projects/extension-svconnector\_sql/issues).
+(https://github.com/cobwebch/svconnector_sql/issues).
 
 
 .. _happy-developer:

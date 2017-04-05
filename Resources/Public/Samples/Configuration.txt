@@ -1,8 +1,8 @@
-driver = mysql
+driver = pdo_mysql
 server = 127.0.0.1
 user = user
 password = password
 database = database
 query = SELECT * FROM foo ORDER BY bar
 init = SET NAMES utf8
-fetchMode = 2
+fetchMode = PDO::FETCH_BOTH
