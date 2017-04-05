@@ -16,7 +16,9 @@ namespace Cobweb\SvconnectorSql\Service;
 
 use Cobweb\Svconnector\Service\ConnectorBase;
 use Cobweb\SvconnectorSql\Database\DatabaseConnectionFactory;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
  * Service "SQL connector" for the "svconnector_sql" extension.
@@ -40,6 +42,13 @@ class ConnectorSql extends ConnectorBase
     {
         parent::init();
         $this->extConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConfiguration'][$this->extKey]);
+        // If running TYPO3 7...
+        if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) < VersionNumberUtility::convertVersionNumberToInteger('8.0.0')) {
+            // ...and extension "adodb" is not loaded, flag the service as unavailable
+            if (!ExtensionManagementUtility::isLoaded('adodb')) {
+                return false;
+            }
+        }
         return true;
     }
 

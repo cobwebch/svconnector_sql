@@ -25,7 +25,6 @@ $EM_CONF[$_EXTKEY] = array (
     'depends' =>
     array (
       'typo3' => '7.6.0-8.99.99',
-      'adodb' => '',
       'svconnector' => '3.0.0-0.0.0',
     ),
     'conflicts' =>

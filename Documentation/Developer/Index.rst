@@ -17,7 +17,7 @@ easy task. The first step is to get the proper service object:
 .. code-block:: php
 
 	$services = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::findService('connector', 'sql');
-	if ($services === FALSE) {
+	if ($services === false) {
 		// Issue an error
 	} else {
 		$connector = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService('connector', 'sql');

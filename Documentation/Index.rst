@@ -27,7 +27,7 @@ SQL Connector Service
 		  sql, database, adodb, data import, fetch data
 
 	:Copyright:
-		2009-2016
+		2009-2017
 
 	:Author:
 		  François Suter (Cobweb)
