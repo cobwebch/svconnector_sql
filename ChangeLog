@@ -1,6 +1,7 @@
 2017-04-05 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
 	* Added compatibility with TYPO3 v8, in particular Doctrine DBAL, resolves #1
+	* Released version 2.1.0
 
 2016-05-02 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
