@@ -28,3 +28,8 @@ This will affect your existing configuration if you used the :code:`uri` paramet
 to define your database connections. **There is no backward compatibility**.
 Please check the :ref:`Configuration chapter <configuration>` to check which
 parameters can be used instead.
+
+A smaller breaking change is that the `fetchMode` parameter now uses directly
+a PHP constant (or its equivalent value). Before version 2.2.0, the constant
+was used as a string and interpreted by the service using :code:`constant()`.
+You need to adapt your configuration accordingly.
