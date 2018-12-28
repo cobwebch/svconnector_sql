@@ -20,13 +20,13 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 
 /**
- * Connects to a variety of DBMS using ADODB.
+ * Connects to a variety of DBMS using Doctrine DBAL.
  *
  * @author Francois Suter (Cobweb) <typo3@cobweb.ch>
  * @package TYPO3
  * @subpackage tx_svconnectorsql
  */
-class DoctrineDbalConnection implements DatabaseConnectionInterface
+class DoctrineDbalConnection
 {
     /**
      * @var \Doctrine\DBAL\Connection

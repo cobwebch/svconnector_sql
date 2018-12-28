@@ -15,10 +15,8 @@ namespace Cobweb\SvconnectorSql\Service;
  */
 
 use Cobweb\Svconnector\Service\ConnectorBase;
-use Cobweb\SvconnectorSql\Database\DatabaseConnectionFactory;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use Cobweb\SvconnectorSql\Database\DoctrineDbalConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
  * Service "SQL connector" for the "svconnector_sql" extension.
@@ -31,24 +29,17 @@ class ConnectorSql extends ConnectorBase
 {
     public $prefixId = 'tx_svconnectorsql_sv1';        // Same as class name
     public $scriptRelPath = 'sv1/class.tx_svconnectorsql_sv1.php';    // Path to this script relative to the extension dir.
-    public $extKey = 'svconnector_sql';    // The extension key.
+    public $extensionKey = 'svconnector_sql';    // The extension key.
 
     /**
      * Verifies that the connection is functional
      * In this case it always is, as the connection can really be tested only for specific configurations
      * @return boolean TRUE if the service is available
      */
-    public function init()
+    public function init(): bool
     {
         parent::init();
-        $this->extConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConfiguration'][$this->extKey]);
-        // If running TYPO3 7...
-        if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) < VersionNumberUtility::convertVersionNumberToInteger('8.0.0')) {
-            // ...and extension "adodb" is not loaded, flag the service as unavailable
-            if (!ExtensionManagementUtility::isLoaded('adodb')) {
-                return false;
-            }
-        }
+        $this->extConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConfiguration'][$this->extensionKey]);
         return true;
     }
 
@@ -65,8 +56,8 @@ class ConnectorSql extends ConnectorBase
         // NOTE: this may throw an exception, but we let it bubble up
         $result = $this->fetchArray($parameters);
         // Implement post-processing hook
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processRaw'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processRaw'] as $className) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] as $className) {
                 $processor = GeneralUtility::getUserObj($className);
                 $result = $processor->processRaw($result, $this);
             }
@@ -80,7 +71,7 @@ class ConnectorSql extends ConnectorBase
      * @param array $parameters Parameters for the call
      * @return string XML structure
      */
-    public function fetchXML($parameters)
+    public function fetchXML($parameters): string
     {
         // Get the data as an array
         // NOTE: this may throw an exception, but we let it bubble up
@@ -88,8 +79,8 @@ class ConnectorSql extends ConnectorBase
         // Transform result to XML
         $xml = GeneralUtility::array2xml_cs($result);
         // Implement post-processing hook
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processXML'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processXML'] as $className) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] as $className) {
                 $processor = GeneralUtility::getUserObj($className);
                 $xml = $processor->processXML($xml, $this);
             }
@@ -104,17 +95,17 @@ class ConnectorSql extends ConnectorBase
      * @throws \Exception
      * @return array PHP array
      */
-    public function fetchArray($parameters)
+    public function fetchArray($parameters): array
     {
         try {
             $data = $this->query($parameters);
             if (TYPO3_DLOG || $this->extConfiguration['debug']) {
-                GeneralUtility::devLog('Structured data', $this->extKey, -1, $data);
+                GeneralUtility::devLog('Structured data', $this->extensionKey, -1, $data);
             }
 
             // Implement post-processing hook
-            if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processArray'])) {
-                foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processArray'] as $className) {
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'])) {
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] as $className) {
                     $processor = GeneralUtility::getUserObj($className);
                     $data = $processor->processArray($data, $this);
                 }
@@ -138,19 +129,19 @@ class ConnectorSql extends ConnectorBase
      * @param array $parameters Parameters for the call
      * @throws \Cobweb\SvconnectorSql\Exception\DatabaseConnectionException
      * @throws \Cobweb\SvconnectorSql\Exception\QueryErrorException
-     * @return array Result of the SQL query
+     * @return mixed Result of the SQL query
      */
     protected function query($parameters)
     {
         // Connect to the database and execute the query
         // NOTE: this may throw exceptions, but we let them bubble up
-        $databaseConnection = DatabaseConnectionFactory::getDatabaseConnection();
+        $databaseConnection = GeneralUtility::makeInstance(DoctrineDbalConnection::class);
         $databaseConnection->connect($parameters);
         $data = $databaseConnection->query($parameters['query']);
 
         // Process the result if any hook is registered
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processResponse'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extKey]['processResponse'] as $className) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] as $className) {
                 $processor = GeneralUtility::getUserObj($className);
                 $data = $processor->processResponse($data, $this);
             }

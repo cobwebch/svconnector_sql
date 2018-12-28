@@ -1,3 +1,8 @@
+2018-12-28 Francois Suter (Cobweb)  <typo3@cobweb.ch>
+
+	* Drop interpretation of constants, resolves #2
+	* Keep only Doctrine DBAL-based database class, resolves #3
+
 2017-04-05 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 
 	* Added compatibility with TYPO3 v8, in particular Doctrine DBAL, resolves #1
