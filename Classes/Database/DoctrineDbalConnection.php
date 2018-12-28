@@ -75,9 +75,7 @@ class DoctrineDbalConnection implements DatabaseConnectionInterface
 
         // Set fetch mode if defined
         if (array_key_exists('fetchMode', $parameters)) {
-            $this->connection->setFetchMode(
-                    constant($parameters['fetchMode'])
-            );
+            $this->connection->setFetchMode($parameters['fetchMode']);
         }
 
         // Execute connection initialization if defined
