@@ -3,6 +3,7 @@
 	* Drop interpretation of constants, resolves #2
 	* Keep only Doctrine DBAL-based database class, resolves #3
 	* Drop compatibility with TYPO3 7, prepare for TYPO3 9, cleanup code, resolves #4
+	* Release version 2.2.0
 
 2017-04-05 Francois Suter (Cobweb)  <typo3@cobweb.ch>
 

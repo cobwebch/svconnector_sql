@@ -21,13 +21,13 @@ $EM_CONF[$_EXTKEY] = [
         'createDirs' => '',
         'clearCacheOnLoad' => 0,
         'author_company' => '',
-        'version' => '2.1.0',
+        'version' => '2.2.0',
         'constraints' =>
                 [
                         'depends' =>
                                 [
                                         'typo3' => '8.7.0-9.99.99',
-                                        'svconnector' => '3.1.0-0.0.0',
+                                        'svconnector' => '3.3.0-0.0.0',
                                 ],
                         'conflicts' =>
                                 [

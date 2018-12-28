@@ -4,10 +4,10 @@
 
 ---
 conf.py:
-  copyright: 2009-2017
+  copyright: 2009-2019
   project: SQL Connector Service
-  version: 2.1
-  release: 2.1.0
+  version: 2.2
+  release: 2.2.0
   latex_documents:
   - - Index
     - svconnector_sql.tex

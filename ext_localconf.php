@@ -11,7 +11,7 @@ if (!defined('TYPO3_MODE')) {
         'tx_svconnectorsql_sv1',
         [
             'title' => 'SQL connector',
-            'description' => 'Connector service to issue SQL query to any database, via ADODB',
+            'description' => 'Connector service to issue SQL query to any database, via Doctrine DBAL',
 
             'subtype' => 'sql',
 
