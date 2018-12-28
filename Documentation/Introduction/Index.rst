@@ -12,12 +12,7 @@ Introduction
 ------------
 
 This extension implements a specific connector service for reading
-data from any database. With TYPO3 v7, it relies on ADODB to connect to any
-database system supported by that library (with some limits,
-due to the many weird syntaxes used for some systems).
-With TYPO3 v8, it relies on Doctrine DBAL, which comes with a better
-unified way of defining connection parameters.
-SQL queries can then be used.
+data from any database relying on Doctrine DBAL.
 
 .. _support:
 

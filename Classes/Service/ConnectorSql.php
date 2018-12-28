@@ -39,7 +39,6 @@ class ConnectorSql extends ConnectorBase
     public function init(): bool
     {
         parent::init();
-        $this->extConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConfiguration'][$this->extensionKey]);
         return true;
     }
 
@@ -49,6 +48,7 @@ class ConnectorSql extends ConnectorBase
      *
      * @param array $parameters Parameters for the call
      * @return mixed Server response
+     * @throws \Exception
      */
     public function fetchRaw($parameters)
     {
@@ -58,7 +58,7 @@ class ConnectorSql extends ConnectorBase
         // Implement post-processing hook
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] as $className) {
-                $processor = GeneralUtility::getUserObj($className);
+                $processor = GeneralUtility::makeInstance($className);
                 $result = $processor->processRaw($result, $this);
             }
         }
@@ -70,6 +70,7 @@ class ConnectorSql extends ConnectorBase
      *
      * @param array $parameters Parameters for the call
      * @return string XML structure
+     * @throws \Exception
      */
     public function fetchXML($parameters): string
     {
@@ -77,11 +78,11 @@ class ConnectorSql extends ConnectorBase
         // NOTE: this may throw an exception, but we let it bubble up
         $result = $this->fetchArray($parameters);
         // Transform result to XML
-        $xml = GeneralUtility::array2xml_cs($result);
+        $xml = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>' . "\n" . GeneralUtility::array2xml($result);
         // Implement post-processing hook
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] as $className) {
-                $processor = GeneralUtility::getUserObj($className);
+                $processor = GeneralUtility::makeInstance($className);
                 $xml = $processor->processXML($xml, $this);
             }
         }
@@ -99,22 +100,18 @@ class ConnectorSql extends ConnectorBase
     {
         try {
             $data = $this->query($parameters);
-            if (TYPO3_DLOG || $this->extConfiguration['debug']) {
-                GeneralUtility::devLog('Structured data', $this->extensionKey, -1, $data);
-            }
+            $this->logger->info('Structured data', $data);
 
             // Implement post-processing hook
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'])) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] as $className) {
-                    $processor = GeneralUtility::getUserObj($className);
+                    $processor = GeneralUtility::makeInstance($className);
                     $data = $processor->processArray($data, $this);
                 }
             }
         } catch (\Exception $e) {
             // Log exception and throw it further
-            if (TYPO3_DLOG || $this->extConfiguration['debug']) {
-                GeneralUtility::devLog('An error occurred: ' . $e->getMessage(), 'svconnector_sql', 3);
-            }
+            $this->logger->error('An error occurred: ' . $e->getMessage());
             throw $e;
         }
         return $data;
@@ -142,7 +139,7 @@ class ConnectorSql extends ConnectorBase
         // Process the result if any hook is registered
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] as $className) {
-                $processor = GeneralUtility::getUserObj($className);
+                $processor = GeneralUtility::makeInstance($className);
                 $data = $processor->processResponse($data, $this);
             }
         }

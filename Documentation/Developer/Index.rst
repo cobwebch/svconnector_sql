@@ -38,14 +38,14 @@ in return. For a PHP array:
 
 .. code-block:: php
 
-	$parameters = array(
+	$parameters = [
 		'driver' => 'postgres',
 		'server' => '127.0.0.1',
 		'user' => 'some_user',
 		'password' => 'some_password',
 		'database' => 'some_db',
 		'query' => 'SELECT * FROM foo ORDER BY bar'
-	);
+	];
 	$data = $connector->fetchXML($parameters);
 
 Obviously this is not limited to issuing SELECT queries,
@@ -56,7 +56,7 @@ However other types of queries have not been tested.
 The :code:`fetchRaw()` method returns the same array as
 :code:`fetchArray()`. The :code:`fetchXML()` method returns
 the array created by :code:`fetchArray()` transformed to XML
-using :code:`\TYPO3\CMS\Core\Utility\GeneralUtility::array2xml_cs()`.
+using :code:`\TYPO3\CMS\Core\Utility\GeneralUtility::array2xml`.
 
 Note that the connection is neither permanent, nor stored in the connector object
 (as one could imagine the object being called several times but for different connections),
