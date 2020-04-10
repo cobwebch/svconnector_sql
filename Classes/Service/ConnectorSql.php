@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ConnectorSql extends ConnectorBase
 {
     public $prefixId = 'tx_svconnectorsql_sv1';        // Same as class name
-    public $scriptRelPath = 'sv1/class.tx_svconnectorsql_sv1.php';    // Path to this script relative to the extension dir.
     public $extensionKey = 'svconnector_sql';    // The extension key.
 
     /**
