@@ -40,6 +40,7 @@ in return. For a PHP array:
 
 	$parameters = [
 		'driver' => 'postgres',
+		'driverClass' => 'Vendor\DBAL\Driver\PDODblib\Driver',
 		'server' => '127.0.0.1',
 		'user' => 'some_user',
 		'password' => 'some_password',

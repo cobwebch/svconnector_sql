@@ -54,7 +54,8 @@ class DoctrineDbalConnection
                     'user' => $parameters['user'],
                     'password' => $parameters['password'],
                     'host' => $parameters['server'],
-                    'driver' => $parameters['driver']
+                    'driver' => $parameters['driver'] ?? null,
+                    'driverClass' => $parameters['driverClass'] ?? null
             );
         }
         try {
