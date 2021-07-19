@@ -1,7 +1,7 @@
 {
 	"name": "cobweb/svconnector_sql",
 	"type": "typo3-cms-extension",
-	"description": "Connector service for any SQL-based database via ADODB.",
+	"description": "Connector service for any SQL-based database via Doctrine-DBAL.",
 	"license": [
 		"GPL-2.0-or-later"
 	],
