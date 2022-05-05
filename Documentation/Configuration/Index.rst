@@ -53,7 +53,7 @@ parameters:
 Connect to TYPO3's own database
 ===============================
 
-You can also connect to the database of your current TYPO3 installation. This might be usefull to migrate data 
+You can also connect to the database of your current TYPO3 installation. This might be useful to migrate data 
 from one table format to another. You could for example migrate data from :sql:`tt_news`
 to :sql:`tx_news_domain_model_news`:
 
