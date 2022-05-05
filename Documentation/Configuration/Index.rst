@@ -50,6 +50,8 @@ parameters:
 |                 |               | Reference: http://php.net/manual/en/pdostatement.fetch.php                                                                   |
 +-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 
+.. _configuration-typo3-database:
+
 Connect to TYPO3's own database
 ===============================
 
