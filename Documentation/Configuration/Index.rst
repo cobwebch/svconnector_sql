@@ -23,6 +23,8 @@ parameters:
 |                 |               |                                                                                                                              |
 |                 |               | See http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#driver                    |
 +-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
+| driverClass     | string        | Fully-qualified name of a custom driver class.                                                                               |
++-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | server          | string        | Address of the server to connect to.                                                                                         |
 +-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | user            | string        | User name to use to connect to the database.                                                                                 |
@@ -50,19 +52,20 @@ parameters:
 |                 |               | Reference: http://php.net/manual/en/pdostatement.fetch.php                                                                   |
 +-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 
+
 .. _configuration-typo3-database:
 
 Connect to TYPO3's own database
 ===============================
 
-You can also connect to the database of your current TYPO3 installation. This might be useful to migrate data 
+You can also connect to the database of your current TYPO3 installation. This might be useful to migrate data
 from one table format to another. You could for example migrate data from :sql:`tt_news`
 to :sql:`tx_news_domain_model_news`:
 
 .. code-block:: php
    :caption: EXT:my_extension/Configuration/TCA/Overrides/tx_news_domain_model_news.php
-   
-   
+
+
    $GLOBALS['TCA']['tx_news_domain_model_news'] = array_replace_recursive($GLOBALS['TCA']['tx_news_domain_model_news'],
    [
       'external' => [

@@ -1,3 +1,7 @@
+2022-12-15 Francois Suter (Idéative)  <typo3@ideative.ch>
+
+	* Add driver class option to connector parameters (thanks to Christian Toffolo)
+
 2021-10-05 Francois Suter (Idéative)  <typo3@ideative.ch>
 
 	* Relase version 3.0.0
