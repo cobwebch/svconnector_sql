@@ -1,6 +1,6 @@
 2022-12-18 Francois Suter (Idéative)  <typo3@ideative.ch>
 
-	* Switch to new connector service registration API, resolves #12
+	* Switch to new connector service registration API, resolves #13
 
 2022-12-15 Francois Suter (Idéative)  <typo3@ideative.ch>
 
