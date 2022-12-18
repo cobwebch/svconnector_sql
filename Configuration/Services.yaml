@@ -10,3 +10,5 @@ services:
 
   Cobweb\SvconnectorSql\Service\ConnectorSql:
     public: true
+    arguments:
+      - !tagged_iterator connector.service

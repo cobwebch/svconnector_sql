@@ -20,24 +20,30 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Service "SQL connector" for the "svconnector_sql" extension.
- *
- * @author Francois Suter (Cobweb) <typo3@cobweb.ch>
- * @package TYPO3
- * @subpackage tx_svconnectorsql
  */
 class ConnectorSql extends ConnectorBase
 {
-    public $prefixId = 'tx_svconnectorsql_sv1';        // Same as class name
-    public $extensionKey = 'svconnector_sql';    // The extension key.
+    protected string $extensionKey = 'svconnector_sql';
+
+    protected string $type = 'sql';
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getName(): string
+    {
+        return 'SQL connector';
+    }
 
     /**
      * Verifies that the connection is functional
      * In this case it always is, as the connection can really be tested only for specific configurations
      * @return boolean TRUE if the service is available
      */
-    public function init(): bool
+    public function isAvailable(): bool
     {
-        parent::init();
         return true;
     }
 
@@ -49,7 +55,7 @@ class ConnectorSql extends ConnectorBase
      * @return mixed Server response
      * @throws \Exception
      */
-    public function fetchRaw($parameters)
+    public function fetchRaw(array $parameters = [])
     {
         // Get the data as an array
         // NOTE: this may throw an exception, but we let it bubble up
@@ -72,7 +78,7 @@ class ConnectorSql extends ConnectorBase
      * @return string XML structure
      * @throws \Exception
      */
-    public function fetchXML($parameters): string
+    public function fetchXML(array $parameters = []): string
     {
         // Get the data as an array
         // NOTE: this may throw an exception, but we let it bubble up
@@ -97,7 +103,7 @@ class ConnectorSql extends ConnectorBase
      * @throws \Exception
      * @return array PHP array
      */
-    public function fetchArray($parameters): array
+    public function fetchArray(array $parameters = []): array
     {
         try {
             $data = $this->query($parameters);
@@ -130,7 +136,7 @@ class ConnectorSql extends ConnectorBase
      * @throws \Cobweb\SvconnectorSql\Exception\QueryErrorException
      * @return mixed Result of the SQL query
      */
-    protected function query($parameters)
+    protected function query(array $parameters = [])
     {
         // Connect to the database and execute the query
         // NOTE: this may throw exceptions, but we let them bubble up
