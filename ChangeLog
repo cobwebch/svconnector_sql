@@ -1,6 +1,8 @@
 2022-12-25 Francois Suter (Idéative)  <typo3@ideative.ch>
 
 	* Adapt to changes in Doctrine/DBAL, resolves #14
+	* Ensure compatibility with TYPO3 12, resolves #12
+	* Ensure compatibility with PHP 8.1
 
 2022-12-18 Francois Suter (Idéative)  <typo3@ideative.ch>
 
