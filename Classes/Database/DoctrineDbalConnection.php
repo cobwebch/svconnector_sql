@@ -17,21 +17,16 @@ namespace Cobweb\SvconnectorSql\Database;
 use Cobweb\SvconnectorSql\Exception\DatabaseConnectionException;
 use Cobweb\SvconnectorSql\Exception\QueryErrorException;
 use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\FetchMode;
 
 /**
  * Connects to a variety of DBMS using Doctrine DBAL.
- *
- * @author Francois Suter (Cobweb) <typo3@cobweb.ch>
- * @package TYPO3
- * @subpackage tx_svconnectorsql
  */
 class DoctrineDbalConnection
 {
-    /**
-     * @var \Doctrine\DBAL\Connection
-     */
-    protected $connection;
+    protected Connection $connection;
 
     /**
      * Connects to a database given connection parameters.
@@ -41,7 +36,7 @@ class DoctrineDbalConnection
      * @return void
      * @throws \Cobweb\SvconnectorSql\Exception\QueryErrorException
      */
-    public function connect($parameters)
+    public function connect(array $parameters = []): void
     {
         $configuration = new Configuration();
         if (array_key_exists('uri', $parameters)) {
@@ -74,15 +69,10 @@ class DoctrineDbalConnection
             );
         }
 
-        // Set fetch mode if defined
-        if (array_key_exists('fetchMode', $parameters)) {
-            $this->connection->setFetchMode($parameters['fetchMode']);
-        }
-
         // Execute connection initialization if defined
         if (!empty($parameters['init'])) {
             try {
-                $this->connection->query($parameters['init']);
+                $this->connection->executeQuery($parameters['init']);
             }
             catch (\Exception $e) {
                 throw new QueryErrorException(
@@ -100,13 +90,15 @@ class DoctrineDbalConnection
      * Executes a SQL query and returns an array of resulting records.
      *
      * @param string $sql SQL query to execute
-     * @throws QueryErrorException
+     * @param int $fetchMode
      * @return array
+     * @throws QueryErrorException
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function query($sql)
+    public function query(string $sql, int $fetchMode = FetchMode::ASSOCIATIVE): array
     {
         try {
-            $res = $this->connection->query($sql);
+            $result = $this->connection->executeQuery($sql);
         }
         catch (\Exception $e) {
             throw new QueryErrorException(
@@ -118,6 +110,13 @@ class DoctrineDbalConnection
             );
         }
 
-        return $res->fetchAll();
+        switch ($fetchMode) {
+            case FetchMode::NUMERIC:
+                return $result->fetchAllNumeric();
+            case FetchMode::COLUMN:
+                return $result->fetchFirstColumn();
+            default:
+                return $result->fetchAllAssociative();
+        }
     }
 }

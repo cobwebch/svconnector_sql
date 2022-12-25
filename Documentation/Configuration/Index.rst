@@ -21,7 +21,7 @@ parameters:
 | driver          | string        | Name of the database system to connect to, taken from the list of                                                            |
 |                 |               | available drivers.                                                                                                           |
 |                 |               |                                                                                                                              |
-|                 |               | See http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#driver                    |
+|                 |               | See https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#driver                    |
 +-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | driverClass     | string        | Fully-qualified name of a custom driver class.                                                                               |
 +-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
@@ -45,11 +45,13 @@ parameters:
 |                 |               |                                                                                                                              |
 |                 |               |    SET NAMES 'UTF8';                                                                                                         |
 +-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
-| fetchMode       | string        | Used to choose the fetch mode, which influences the type of                                                                  |
-|                 |               | array returned by the recordset (numerical, associative or both)                                                             |
+| fetchMode       | string        | Used to choose the fetch mode, which influences the type of array                                                            |
+|                 |               | returned by the recordset (only numerical, associative or first column are supported).                                       |
+|                 |               |                                                                                                                              |
+|                 |               | *Default is associative.*                                                                                                    |
 |                 |               |                                                                                                                              |
 |                 |               | Use the name of the constants from the PDO drivers.                                                                          |
-|                 |               | Reference: http://php.net/manual/en/pdostatement.fetch.php                                                                   |
+|                 |               | Reference: https://www.php.net/manual/en/pdostatement.fetch.php                                                              |
 +-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 
 
