@@ -142,7 +142,7 @@ class ConnectorSql extends ConnectorBase
         // NOTE: this may throw exceptions, but we let them bubble up
         $databaseConnection = GeneralUtility::makeInstance(DoctrineDbalConnection::class);
         $databaseConnection->connect($parameters);
-        $data = $databaseConnection->query($parameters['query'], $parameters['fetchMode']);
+        $data = $databaseConnection->query($parameters['query'], (int)($parameters['fetchMode'] ?? 0));
 
         // Process the result if any hook is registered
         $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] ?? null;
