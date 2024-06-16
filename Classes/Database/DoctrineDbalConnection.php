@@ -1,5 +1,6 @@
 <?php
-namespace Cobweb\SvconnectorSql\Database;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,12 +15,13 @@ namespace Cobweb\SvconnectorSql\Database;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace Cobweb\SvconnectorSql\Database;
+
 use Cobweb\SvconnectorSql\Exception\DatabaseConnectionException;
 use Cobweb\SvconnectorSql\Exception\QueryErrorException;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\FetchMode;
 
 /**
  * Connects to a variety of DBMS using Doctrine DBAL.
@@ -74,7 +76,7 @@ class DoctrineDbalConnection
             try {
                 $this->connection->executeQuery($parameters['init']);
             }
-            catch (\Exception $e) {
+            catch (\Throwable $e) {
                 throw new QueryErrorException(
                         sprintf(
                             'Failled executing "init" statement (%s)',
@@ -95,7 +97,7 @@ class DoctrineDbalConnection
      * @throws QueryErrorException
      * @throws \Doctrine\DBAL\Exception
      */
-    public function query(string $sql, int $fetchMode = FetchMode::ASSOCIATIVE): array
+    public function query(string $sql, int $fetchMode = \PDO::FETCH_ASSOC): array
     {
         try {
             $result = $this->connection->executeQuery($sql);
@@ -111,9 +113,9 @@ class DoctrineDbalConnection
         }
 
         switch ($fetchMode) {
-            case FetchMode::NUMERIC:
+            case \PDO::FETCH_NUM:
                 return $result->fetchAllNumeric();
-            case FetchMode::COLUMN:
+            case \PDO::FETCH_COLUMN:
                 return $result->fetchFirstColumn();
             default:
                 return $result->fetchAllAssociative();

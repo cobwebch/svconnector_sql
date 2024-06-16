@@ -45,12 +45,13 @@ parameters:
 |                 |               |                                                                                                                              |
 |                 |               |    SET NAMES 'UTF8';                                                                                                         |
 +-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
-| fetchMode       | string        | Used to choose the fetch mode, which influences the type of array                                                            |
+| fetchMode       | int           | Used to choose the fetch mode, which influences the type of array                                                            |
 |                 |               | returned by the recordset (only numerical, associative or first column are supported).                                       |
 |                 |               |                                                                                                                              |
 |                 |               | *Default is associative.*                                                                                                    |
 |                 |               |                                                                                                                              |
-|                 |               | Use the name of the constants from the PDO drivers.                                                                          |
+|                 |               | Use the name of the constants from the PDO drivers or the numerical values                                                   |
+|                 |               | (numerical = 3, associative = 2, first column = 7)                                                                           |
 |                 |               | Reference: https://www.php.net/manual/en/pdostatement.fetch.php                                                              |
 +-----------------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 
