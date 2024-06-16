@@ -1,5 +1,6 @@
 <?php
-namespace Cobweb\SvconnectorSql\Service;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +15,10 @@ namespace Cobweb\SvconnectorSql\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace Cobweb\SvconnectorSql\Service;
+
+use Cobweb\SvconnectorSql\Exception\DatabaseConnectionException;
+use Cobweb\SvconnectorSql\Exception\QueryErrorException;
 use Cobweb\Svconnector\Service\ConnectorBase;
 use Cobweb\SvconnectorSql\Database\DoctrineDbalConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -132,8 +137,8 @@ class ConnectorSql extends ConnectorBase
      *       as it does not make sense in this case
      *
      * @param array $parameters Parameters for the call
-     * @throws \Cobweb\SvconnectorSql\Exception\DatabaseConnectionException
-     * @throws \Cobweb\SvconnectorSql\Exception\QueryErrorException
+     * @throws DatabaseConnectionException
+     * @throws QueryErrorException
      * @return mixed Result of the SQL query
      */
     protected function query(array $parameters = [])

@@ -34,26 +34,26 @@ class DoctrineDbalConnection
      * Connects to a database given connection parameters.
      *
      * @param array $parameters Parameters needed to connect to the database
-     * @throws \Cobweb\SvconnectorSql\Exception\DatabaseConnectionException
+     * @throws DatabaseConnectionException
      * @return void
-     * @throws \Cobweb\SvconnectorSql\Exception\QueryErrorException
+     * @throws QueryErrorException
      */
     public function connect(array $parameters = []): void
     {
         $configuration = new Configuration();
         if (array_key_exists('uri', $parameters)) {
-            $connectionParameters = array(
-                    'url' => $parameters['uri']
-            );
+            $connectionParameters = [
+                'url' => $parameters['uri']
+            ];
         } else {
-            $connectionParameters = array(
-                    'dbname' => $parameters['database'],
-                    'user' => $parameters['user'],
-                    'password' => $parameters['password'],
-                    'host' => $parameters['server'],
-                    'driver' => $parameters['driver'] ?? null,
-                    'driverClass' => $parameters['driverClass'] ?? null
-            );
+            $connectionParameters = [
+                'dbname' => $parameters['database'],
+                'user' => $parameters['user'],
+                'password' => $parameters['password'],
+                'host' => $parameters['server'],
+                'driver' => $parameters['driver'] ?? null,
+                'driverClass' => $parameters['driverClass'] ?? null
+            ];
         }
         try {
             $this->connection = DriverManager::getConnection(
@@ -112,13 +112,10 @@ class DoctrineDbalConnection
             );
         }
 
-        switch ($fetchMode) {
-            case \PDO::FETCH_NUM:
-                return $result->fetchAllNumeric();
-            case \PDO::FETCH_COLUMN:
-                return $result->fetchFirstColumn();
-            default:
-                return $result->fetchAllAssociative();
-        }
+        return match ($fetchMode) {
+            \PDO::FETCH_NUM => $result->fetchAllNumeric(),
+            \PDO::FETCH_COLUMN => $result->fetchFirstColumn(),
+            default => $result->fetchAllAssociative(),
+        };
     }
 }
