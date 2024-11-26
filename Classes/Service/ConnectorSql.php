@@ -17,6 +17,11 @@ declare(strict_types=1);
 
 namespace Cobweb\SvconnectorSql\Service;
 
+use Cobweb\Svconnector\Attribute\AsConnectorService;
+use Cobweb\Svconnector\Event\ProcessArrayDataEvent;
+use Cobweb\Svconnector\Event\ProcessRawDataEvent;
+use Cobweb\Svconnector\Event\ProcessResponseEvent;
+use Cobweb\Svconnector\Event\ProcessXmlDataEvent;
 use Cobweb\SvconnectorSql\Exception\DatabaseConnectionException;
 use Cobweb\SvconnectorSql\Exception\QueryErrorException;
 use Cobweb\Svconnector\Service\ConnectorBase;
@@ -26,21 +31,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Service "SQL connector" for the "svconnector_sql" extension.
  */
+#[AsConnectorService(type: 'sql', name: 'SQL feed connector')]
 class ConnectorSql extends ConnectorBase
 {
     protected string $extensionKey = 'svconnector_sql';
-
-    protected string $type = 'sql';
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function getName(): string
-    {
-        return 'SQL connector';
-    }
 
     /**
      * Verifies that the connection is functional
@@ -62,18 +56,30 @@ class ConnectorSql extends ConnectorBase
      */
     public function fetchRaw(array $parameters = [])
     {
+        // Call to parent is used only to raise flag about argument deprecation
+        // TODO: remove once method signature is changed in next major version
+        parent::fetchRaw(...func_get_args());
+
         // Get the data as an array
         // NOTE: this may throw an exception, but we let it bubble up
-        $result = $this->fetchArray($parameters);
+        $result = $this->fetchArray();
         // Implement post-processing hook
         $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] ?? null;
-        if (is_array($hooks)) {
+        if (is_array($hooks) && count($hooks) > 0) {
+            trigger_error(
+                'Using the processRaw hook is deprecated. Use the ProcessRawDataEvent instead',
+                E_USER_DEPRECATED
+            );
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processRaw'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $result = $processor->processRaw($result, $this);
             }
         }
-        return $result;
+        /** @var ProcessRawDataEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ProcessRawDataEvent($result, $this)
+        );
+        return $event->getData();
     }
 
     /**
@@ -85,20 +91,33 @@ class ConnectorSql extends ConnectorBase
      */
     public function fetchXML(array $parameters = []): string
     {
+        // Call to parent is used only to raise flag about argument deprecation
+        // TODO: remove once method signature is changed in next major version
+        parent::fetchXML(...func_get_args());
+
         // Get the data as an array
         // NOTE: this may throw an exception, but we let it bubble up
-        $result = $this->fetchArray($parameters);
+        $result = $this->fetchArray();
         // Transform result to XML
         $xml = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>' . "\n" . GeneralUtility::array2xml($result);
         // Implement post-processing hook
         $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] ?? null;
-        if (is_array($hooks)) {
+        if (is_array($hooks) && count($hooks) > 0) {
+            trigger_error(
+                'Using the processXML hook is deprecated. Use the ProcessXmlDataEvent instead',
+                E_USER_DEPRECATED
+            );
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processXML'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $xml = $processor->processXML($xml, $this);
             }
         }
-        return $xml;
+        /** @var ProcessXmlDataEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ProcessXmlDataEvent($xml, $this)
+        );
+
+        return $event->getData();
     }
 
     /**
@@ -110,13 +129,21 @@ class ConnectorSql extends ConnectorBase
      */
     public function fetchArray(array $parameters = []): array
     {
+        // Call to parent is used only to raise flag about argument deprecation
+        // TODO: remove once method signature is changed in next major version
+        parent::fetchArray(...func_get_args());
+
         try {
-            $data = $this->query($parameters);
+            $data = $this->query();
             $this->logger->info('Structured data', $data);
 
             // Implement post-processing hook
             $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] ?? null;
-            if (is_array($hooks)) {
+            if (is_array($hooks) && count($hooks) > 0) {
+                trigger_error(
+                    'Using the processArray hook is deprecated. Use the ProcessArrayDataEvent instead',
+                    E_USER_DEPRECATED
+                );
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processArray'] as $className) {
                     $processor = GeneralUtility::makeInstance($className);
                     $data = $processor->processArray($data, $this);
@@ -127,7 +154,11 @@ class ConnectorSql extends ConnectorBase
             $this->logger->error('An error occurred: ' . $e->getMessage());
             throw $e;
         }
-        return $data;
+        /** @var ProcessArrayDataEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ProcessArrayDataEvent($data, $this)
+        );
+        return $event->getData();
     }
 
     /**
@@ -143,21 +174,37 @@ class ConnectorSql extends ConnectorBase
      */
     protected function query(array $parameters = [])
     {
+        // Call to parent is used only to raise flag about argument deprecation
+        // TODO: remove once method signature is changed in next major version
+        parent::query(...func_get_args());
+
         // Connect to the database and execute the query
         // NOTE: this may throw exceptions, but we let them bubble up
         $databaseConnection = GeneralUtility::makeInstance(DoctrineDbalConnection::class);
-        $databaseConnection->connect($parameters);
-        $data = $databaseConnection->query($parameters['query'], (int)($parameters['fetchMode'] ?? 0));
+        $databaseConnection->connect($this->parameters);
+        $data = $databaseConnection->query(
+            $this->parameters['query'],
+            (int)($this->parameters['fetchMode'] ?? 0)
+        );
 
         // Process the result if any hook is registered
         $hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] ?? null;
-        if (is_array($hooks)) {
+        if (is_array($hooks) && count($hooks) > 0) {
+            trigger_error(
+                'Using the processResponse hook is deprecated. Use the ProcessResponseEvent instead',
+                E_USER_DEPRECATED
+            );
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$this->extensionKey]['processResponse'] as $className) {
                 $processor = GeneralUtility::makeInstance($className);
                 $data = $processor->processResponse($data, $this);
             }
         }
+        /** @var ProcessResponseEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ProcessResponseEvent($data, $this)
+        );
+
         // Return the result
-        return $data;
+        return $event->getResponse();
     }
 }

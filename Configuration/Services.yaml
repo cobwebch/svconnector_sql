@@ -7,8 +7,3 @@ services:
 
   Cobweb\SvconnectorSql\:
     resource: '../Classes/*'
-
-  Cobweb\SvconnectorSql\Service\ConnectorSql:
-    public: true
-    arguments:
-      - !tagged_iterator connector.service
