@@ -3,7 +3,7 @@
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. include:: Includes.txt
+.. include:: /Includes.rst.txt
 
 
 .. _start:
@@ -27,7 +27,7 @@ SQL Connector Service
 		  sql, database, adodb, data import, fetch data
 
 	:Copyright:
-		2009-2023
+		2009-2024
 
 	:Author:
 		  François Suter (Idéative)
@@ -57,6 +57,7 @@ a GNU/GPL CMS/Framework available from `www.typo3.org <http://www.typo3.org/>`_.
    Introduction/Index
    Installation/Index
    Configuration/Index
+   Considerations/Index
    Developer/Index
 
 .. Meta Menu
