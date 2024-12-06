@@ -1,4 +1,5 @@
 <?php
+
 namespace Cobweb\SvconnectorSql\Exception;
 
 /*
@@ -18,10 +19,5 @@ use Cobweb\Svconnector\Exception\SourceErrorException;
 
 /**
  * Exception to be thrown when a SQL query fails.
- *
- * @package Cobweb\SvconnectorSql\Exception
  */
-class QueryErrorException extends SourceErrorException
-{
-
-}
+class QueryErrorException extends SourceErrorException {}

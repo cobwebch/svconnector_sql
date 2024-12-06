@@ -35,7 +35,6 @@ class DoctrineDbalConnection
      *
      * @param array $parameters Parameters needed to connect to the database
      * @throws DatabaseConnectionException
-     * @return void
      * @throws QueryErrorException
      */
     public function connect(array $parameters = []): void
@@ -43,7 +42,7 @@ class DoctrineDbalConnection
         $configuration = new Configuration();
         if (array_key_exists('uri', $parameters)) {
             $connectionParameters = [
-                'url' => $parameters['uri']
+                'url' => $parameters['uri'],
             ];
         } else {
             $connectionParameters = [
@@ -52,22 +51,22 @@ class DoctrineDbalConnection
                 'password' => $parameters['password'],
                 'host' => $parameters['server'],
                 'driver' => $parameters['driver'] ?? null,
-                'driverClass' => $parameters['driverClass'] ?? null
+                'driverClass' => $parameters['driverClass'] ?? null,
             ];
         }
         try {
             $this->connection = DriverManager::getConnection(
-                    $connectionParameters,
-                    $configuration
+                $connectionParameters,
+                $configuration
             );
         } catch (\Exception $e) {
             // Throw unified exception
             throw new DatabaseConnectionException(
-                    sprintf(
-                            'Database connection failed (%s)',
-                            $e->getMessage()
-                    ),
-                    1491062456
+                sprintf(
+                    'Database connection failed (%s)',
+                    $e->getMessage()
+                ),
+                1491062456
             );
         }
 
@@ -75,14 +74,13 @@ class DoctrineDbalConnection
         if (!empty($parameters['init'])) {
             try {
                 $this->connection->executeQuery($parameters['init']);
-            }
-            catch (\Throwable $e) {
+            } catch (\Throwable $e) {
                 throw new QueryErrorException(
-                        sprintf(
-                            'Failled executing "init" statement (%s)',
-                            $e->getMessage()
-                        ),
-                        1491379532
+                    sprintf(
+                        'Failled executing "init" statement (%s)',
+                        $e->getMessage()
+                    ),
+                    1491379532
                 );
             }
         }
@@ -101,14 +99,13 @@ class DoctrineDbalConnection
     {
         try {
             $result = $this->connection->executeQuery($sql);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new QueryErrorException(
-                    sprintf(
-                        'Failled executing query (%s)',
-                        $e->getMessage()
-                    ),
-                    1491379701
+                sprintf(
+                    'Failled executing query (%s)',
+                    $e->getMessage()
+                ),
+                1491379701
             );
         }
 

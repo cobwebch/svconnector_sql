@@ -22,10 +22,10 @@ use Cobweb\Svconnector\Event\ProcessArrayDataEvent;
 use Cobweb\Svconnector\Event\ProcessRawDataEvent;
 use Cobweb\Svconnector\Event\ProcessResponseEvent;
 use Cobweb\Svconnector\Event\ProcessXmlDataEvent;
-use Cobweb\SvconnectorSql\Exception\DatabaseConnectionException;
-use Cobweb\SvconnectorSql\Exception\QueryErrorException;
 use Cobweb\Svconnector\Service\ConnectorBase;
 use Cobweb\SvconnectorSql\Database\DoctrineDbalConnection;
+use Cobweb\SvconnectorSql\Exception\DatabaseConnectionException;
+use Cobweb\SvconnectorSql\Exception\QueryErrorException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -39,7 +39,7 @@ class ConnectorSql extends ConnectorBase
     /**
      * Verifies that the connection is functional
      * In this case it always is, as the connection can really be tested only for specific configurations
-     * @return boolean TRUE if the service is available
+     * @return bool TRUE if the service is available
      */
     public function isAvailable(): bool
     {
