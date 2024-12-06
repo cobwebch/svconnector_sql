@@ -11,7 +11,7 @@
                interlink-shortcode="cobweb/svconnector_sql"
     />
     <project
-            title="CSV Connector Service"
+            title="SQL Connector Service"
             release="4.1.0"
             copyright="2009-2024"
     />
