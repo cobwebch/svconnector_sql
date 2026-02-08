@@ -21,13 +21,13 @@ SQL Connector Service
 		|release|
 
 	:Description:
-		  Connector service for any SQL-based database via ADODB.
+		  Connector service for any SQL-based database via PDO.
 
 	:Keywords:
-		  sql, database, adodb, data import, fetch data
+		  sql, database, pdo, data import, fetch data
 
 	:Copyright:
-		2009-2025
+		2009-2026
 
 	:Author:
 		  François Suter (Idéative)

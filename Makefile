@@ -30,6 +30,28 @@ fix: fix-cgl## Run all fixes
 test-cgl: ## Fix PHP coding styles
 	Build/Scripts/runTests.sh -s cgl
 
+.PHONY: test-unit-8-2
+test-unit-8-2: ## Run unit tests with PHP 8.2 (lowest)
+	Build/Scripts/runTests.sh -s unit -p 8.2
+
+.PHONY: test-unit-8-5
+test-unit-8-5: ## Run unit tests with PHP 8.4 (highest supported by TYPO3 13)
+	Build/Scripts/runTests.sh -s unit -p 8.5
+
+.PHONY: test-unit
+test-unit: test-unit-8-2 test-unit-8-5## Run unit tests with PHP 8.2 and 8.5
+
+.PHONY: test-functional-8-2
+test-functional-8-2: ## Run functional tests with PHP 8.2 and mariadb (lowest)
+	Build/Scripts/runTests.sh -s functional -p 8.2 -d mysql
+
+.PHONY: test-functional-8-5
+test-functional-8-5: ## Run functional tests with PHP 8.5 and mariadb (highest supported by TYPO3 13)
+	Build/Scripts/runTests.sh -s functional -p 8.5 -d mysql
+
+.PHONY: test-functional
+test-functional: test-functional-8-2 test-functional-8-5## Run functional tests with PHP 8.2 and 8.5
+
 .PHONY: phpstan
 phpstan: ## Run phpstan tests
 	Build/Scripts/runTests.sh -s phpstan
@@ -38,5 +60,10 @@ phpstan: ## Run phpstan tests
 phpstan-baseline: ## Update the phpstan baseline
 	Build/Scripts/runTests.sh -s phpstanBaseline
 
+.PHONY: rector
+rector: ## Run rector
+	Build/Scripts/runTests.sh -s composerUpdateRector; Build/Scripts/runTests.sh -s rector
+
 .PHONY: test
-test: test-cgl phpstan test-docs ## Run all tests
+#test: test-cgl phpstan rector test-docs test-unit test-functional## Run all tests
+test: test-cgl phpstan rector test-docs## SQL connector has no tests so far

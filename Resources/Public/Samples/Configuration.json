@@ -1,10 +1,10 @@
 {
   "driver" : "pdo_mysql",
-  "server" : "127.0.0.1",
-  "user" : "user",
-  "password" : "password",
-  "database" : "database",
-  "query" : "SELECT * FROM foo ORDER BY bar",
+  "server" : "db",
+  "user" : "db",
+  "password" : "db",
+  "database" : "db",
+  "query" : "SELECT uid, title FROM pages ORDER BY title",
   "init" : "SET NAMES utf8mb4",
   "fetchMode" : 2
 }
