@@ -18,6 +18,17 @@ It requires extension “svconnector” which provides the base
 for all connector services.
 
 
+.. _installation-update-600:
+
+Updating to 6.0.0
+^^^^^^^^^^^^^^^^^
+
+Version 6.0.0 adds support for TYPO3 14 and PHP 8.5, while dropping support
+for TYPO3 12 and PHP 8.1.
+
+Hooks have been entirely removed. Use only events.
+
+
 .. _installation-update-500:
 
 Updating to 5.0.0
