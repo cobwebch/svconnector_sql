@@ -1,3 +1,7 @@
+2026-04-22 Francois Suter (Idéative)  <typo3@ideative.ch>
+
+    * Release version 6.0.0
+
 2026-02-08 Francois Suter (Idéative)  <typo3@ideative.ch>
 
     * Ensure compatibility with TYPO3 14 and PHP 8.5, resolves #18
